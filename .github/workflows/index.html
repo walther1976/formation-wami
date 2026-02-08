@@ -1,51 +1,1954 @@
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy Jekyll with GitHub Pages dependencies preinstalled
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAMI - Quiz Formation Module 1</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #239688 0%, #3CB0C2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+        .screen {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.2);
+        }
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+        .hidden {
+            display: none !important;
+        }
 
-jobs:
-  # Build job
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        /* HOME SCREEN */
+        #home-screen {
+            text-align: center;
+        }
 
-  # Deployment job
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        #home-screen h1 {
+            color: #239688;
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        #home-screen p {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .home-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .btn-giant {
+            padding: 30px 40px;
+            font-size: 1.5em;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-giant:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-giant:active {
+            transform: translateY(0);
+        }
+
+        .btn-green {
+            background: #239688;
+            color: white;
+        }
+
+        .btn-blue {
+            background: #3CB0C2;
+            color: white;
+        }
+
+        .btn-yellow {
+            background: #FFC842;
+            color: #333;
+        }
+
+        /* LOGIN SCREEN */
+        #login-screen h2 {
+            color: #239688;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1em;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #239688;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: #239688;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn-primary:hover {
+            background: #1a7068;
+        }
+
+        .btn-back {
+            width: 100%;
+            padding: 12px;
+            background: #ddd;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-back:hover {
+            background: #ccc;
+        }
+
+        /* DASHBOARD SCREEN */
+        #dashboard-screen h2 {
+            color: #239688;
+            margin-bottom: 10px;
+        }
+
+        .welcome-msg {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .quiz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .quiz-card {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+        }
+
+        .quiz-card:hover {
+            transform: translateY(-5px);
+            border-color: #239688;
+            box-shadow: 0 8px 20px rgba(35, 150, 136, 0.3);
+        }
+
+        .quiz-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .quiz-card.locked:hover {
+            transform: none;
+            border-color: transparent;
+        }
+
+        .quiz-card h3 {
+            color: #239688;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .quiz-card p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .badge-available {
+            background: #4caf50;
+            color: white;
+        }
+
+        .badge-locked {
+            background: #f44336;
+            color: white;
+        }
+
+        .badge-completed {
+            background: #FFC842;
+            color: #333;
+        }
+
+        /* QUIZ SCREEN */
+        #quiz-screen .quiz-header {
+            background: #239688;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .quiz-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .answer-btn {
+            padding: 20px;
+            background: #f5f5f5;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+
+        .answer-btn:hover {
+            background: #e8f5e9;
+            border-color: #239688;
+        }
+
+        .answer-btn.selected {
+            background: #3CB0C2;
+            color: white;
+            border-color: #3CB0C2;
+        }
+
+        .answer-btn.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .answer-btn.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .answer-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .quiz-nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-quiz {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-next {
+            background: #239688;
+            color: white;
+        }
+
+        .btn-next:hover {
+            background: #1a7068;
+        }
+
+        .btn-next:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* RESULTS SCREEN */
+        .results-container {
+            text-align: center;
+        }
+
+        .score-display {
+            font-size: 4em;
+            color: #239688;
+            font-weight: bold;
+            margin: 30px 0;
+        }
+
+        .results-message {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .results-message.success {
+            color: #4caf50;
+        }
+
+        .results-message.failure {
+            color: #f44336;
+        }
+
+        .certificate-info {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+
+        /* ADMIN SCREEN */
+        #admin-screen h2 {
+            color: #239688;
+            margin-bottom: 30px;
+        }
+
+        .admin-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .results-table th {
+            background: #239688;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .results-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .results-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #home-screen h1 {
+                font-size: 2em;
+            }
+
+            .btn-giant {
+                font-size: 1.2em;
+                padding: 20px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HOME SCREEN -->
+        <div id="home-screen" class="screen">
+            <h1>🌿 WAMI Formation</h1>
+            <p>Module 1 : Médecine Traditionnelle Africaine</p>
+            <div class="home-buttons">
+                <button class="btn-giant btn-green" onclick="showLoginScreen()">
+                    👤 CONNEXION APPRENANT
+                </button>
+                <button class="btn-giant btn-blue" onclick="showAdminScreen()">
+                    🔐 ESPACE ADMINISTRATEUR
+                </button>
+                <button class="btn-giant btn-yellow" onclick="startDemoMode()">
+                    🎓 MODE DÉMO
+                </button>
+            </div>
+        </div>
+
+        <!-- LOGIN SCREEN -->
+        <div id="login-screen" class="screen hidden">
+            <h2>📝 Connexion Apprenant</h2>
+            <div class="form-group">
+                <label for="prenom">Prénom *</label>
+                <input type="text" id="prenom" placeholder="Votre prénom" />
+            </div>
+            <div class="form-group">
+                <label for="nom">Nom *</label>
+                <input type="text" id="nom" placeholder="Votre nom" />
+            </div>
+            <button class="btn-primary" onclick="login()">ENTRER</button>
+            <button class="btn-back" onclick="showHomeScreen()">← Retour</button>
+        </div>
+
+        <!-- DASHBOARD SCREEN -->
+        <div id="dashboard-screen" class="screen hidden">
+            <h2>📚 Tableau de Bord</h2>
+            <p class="welcome-msg">Bienvenue, <span id="user-name-display"></span>!</p>
+
+            <div class="quiz-grid" id="quiz-cards-container">
+                <!-- Quiz cards will be inserted here by JavaScript -->
+            </div>
+
+            <button class="btn-back" onclick="logout()" style="margin-top: 30px;">🚪 Déconnexion</button>
+        </div>
+
+        <!-- QUIZ SCREEN -->
+        <div id="quiz-screen" class="screen hidden">
+            <div class="quiz-header">
+                <div class="quiz-progress">
+                    <span>Question <span id="current-question-num">1</span> / <span id="total-questions">10</span></span>
+                    <span>Score: <span id="current-score">0</span></span>
+                </div>
+                <h3 id="quiz-title">Quiz en cours...</h3>
+            </div>
+
+            <div class="question-container">
+                <div class="question-text" id="question-text"></div>
+                <div class="answers" id="answers-container"></div>
+            </div>
+
+            <div class="quiz-nav-buttons">
+                <button class="btn-quiz btn-next" id="next-question-btn" onclick="nextQuestion()">
+                    Suivant →
+                </button>
+            </div>
+        </div>
+
+        <!-- RESULTS SCREEN -->
+        <div id="results-screen" class="screen hidden">
+            <div class="results-container">
+                <h2>🎯 Résultats du Quiz</h2>
+                <div class="score-display" id="final-score-display">0/10</div>
+                <div class="results-message" id="results-message"></div>
+
+                <div id="certificate-section" class="certificate-info hidden">
+                    <h3>🎓 Félicitations !</h3>
+                    <p>Vous avez obtenu votre certificat de réussite.</p>
+                    <button class="btn-primary" onclick="downloadCertificate()">
+                        📥 Télécharger le Certificat PDF
+                    </button>
+                </div>
+
+                <button class="btn-primary" onclick="backToDashboard()" style="margin-top: 30px;">
+                    ← Retour au Tableau de Bord
+                </button>
+            </div>
+        </div>
+
+        <!-- ADMIN SCREEN -->
+        <div id="admin-screen" class="screen hidden">
+            <h2>🔐 Espace Administrateur</h2>
+
+            <div id="admin-login-form">
+                <div class="form-group">
+                    <label for="admin-code">Code Administrateur</label>
+                    <input type="password" id="admin-code" placeholder="Entrez le code" />
+                </div>
+                <button class="btn-primary" onclick="adminLogin()">Se connecter</button>
+                <button class="btn-back" onclick="showHomeScreen()">← Retour</button>
+            </div>
+
+            <div id="admin-panel" class="hidden">
+                <div class="admin-controls">
+                    <button class="btn-primary" onclick="exportCSV()">📊 Exporter CSV</button>
+                    <button class="btn-back" onclick="clearAllData()">🗑️ Effacer toutes les données</button>
+                    <button class="btn-back" onclick="adminLogout()">🚪 Déconnexion</button>
+                </div>
+
+                <h3>Résultats des Apprenants</h3>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Prénom</th>
+                            <th>Nom</th>
+                            <th>Quiz</th>
+                            <th>Score</th>
+                            <th>Pourcentage</th>
+                            <th>Statut</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-table-body">
+                        <!-- Results will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log("🚀 WAMI Quiz Application - Chargement...");
+
+        // ==================== QUIZ DATA ====================
+        const QUIZ_DATA = {
+            "section1": {
+                "title": "Section 1 : Introduction à la MTA",
+                "duration": 10,
+                "passingScore": 8,
+                "maxAttempts": 2,
+                "resetPeriod": "day",
+                "questions": [
+                    {
+                        "question": "Que signifie l'acronyme MTA ?",
+                        "answers": [
+                            "Médecine Traditionnelle Africaine",
+                            "Médecine Tropicale Avancée",
+                            "Médecine Thérapeutique Alternative",
+                            "Médecine Traditionnelle Authentique"
+                        ],
+                        "correct": 0
+                    },
+                    {
+                        "question": "Qui est un Nganga dans la MTA ?",
+                        "answers": [
+                            "Un simple vendeur de plantes",
+                            "Un tradipraticien/guérisseur traditionnel",
+                            "Un médecin occidental",
+                            "Un pharmacien"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Quelle est la mission principale d'un Herboriste ?",
+                        "answers": [
+                            "Soigner les maladies graves",
+                            "Pratiquer la chirurgie",
+                            "Collecter et commercialiser les plantes médicinales",
+                            "Former les médecins"
+                        ],
+                        "correct": 2
+                    },
+                    {
+                        "question": "Qu'est-ce qu'une Matrone traditionnelle ?",
+                        "answers": [
+                            "Une sage-femme traditionnelle",
+                            "Une infirmière hospitalière",
+                            "Une vendeuse de médicaments",
+                            "Une responsable administrative"
+                        ],
+                        "correct": 0
+                    },
+                    {
+                        "question": "Le rôle du Devin dans la MTA est de :",
+                        "answers": [
+                            "Vendre des plantes au marché",
+                            "Établir des diagnostics par des pratiques divinatoires",
+                            "Effectuer des opérations chirurgicales",
+                            "Former les étudiants en médecine"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Quel est l'objectif principal de la formation WAMI ?",
+                        "answers": [
+                            "Remplacer la médecine moderne",
+                            "Encadrer et professionnaliser les acteurs de la MTA",
+                            "Interdire l'usage des plantes",
+                            "Former uniquement des pharmaciens"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La MTA est reconnue par :",
+                        "answers": [
+                            "Uniquement le Gabon",
+                            "L'Organisation Mondiale de la Santé (OMS)",
+                            "Aucune institution internationale",
+                            "Seulement les tradipraticiens"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Combien de modules comporte la formation WAMI ?",
+                        "answers": [
+                            "2 modules",
+                            "5 modules",
+                            "10 modules",
+                            "15 modules"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Le Module 1 de WAMI porte sur :",
+                        "answers": [
+                            "La pharmacopée uniquement",
+                            "Les fondements et principes de la MTA",
+                            "La gestion d'entreprise",
+                            "La communication digitale"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La certification WAMI permet de :",
+                        "answers": [
+                            "Pratiquer sans aucune réglementation",
+                            "Être reconnu comme acteur qualifié de la MTA",
+                            "Ouvrir une pharmacie conventionnelle",
+                            "Remplacer un diplôme de médecine"
+                        ],
+                        "correct": 1
+                    }
+                ]
+            },
+            "section2": {
+                "title": "Section 2 : Histoire & Fondements",
+                "duration": 10,
+                "passingScore": 8,
+                "maxAttempts": 2,
+                "resetPeriod": "day",
+                "questions": [
+                    {
+                        "question": "En quelle année l'OMS a-t-elle reconnu officiellement la médecine traditionnelle lors de la Déclaration d'Alma-Ata ?",
+                        "answers": [
+                            "1968",
+                            "1978",
+                            "1988",
+                            "1998"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Quelle est la période couverte par la Stratégie de l'OMS pour la médecine traditionnelle ?",
+                        "answers": [
+                            "2010-2020",
+                            "2014-2023",
+                            "2015-2025",
+                            "2020-2030"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Au Gabon, combien de catégories de tradipraticiens sont officiellement reconnues ?",
+                        "answers": [
+                            "3 catégories",
+                            "5 catégories",
+                            "8 catégories",
+                            "10 catégories"
+                        ],
+                        "correct": 2
+                    },
+                    {
+                        "question": "Le cadre légal gabonais pour la MTA vise à :",
+                        "answers": [
+                            "Interdire toutes les pratiques traditionnelles",
+                            "Structurer et encadrer la pratique de la médecine traditionnelle",
+                            "Remplacer la médecine moderne",
+                            "Exclure les tradipraticiens du système de santé"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La Déclaration d'Alma-Ata a mis l'accent sur :",
+                        "answers": [
+                            "L'abolition de la médecine traditionnelle",
+                            "Les soins de santé primaires pour tous",
+                            "L'usage exclusif de médicaments de synthèse",
+                            "La médecine hospitalière uniquement"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Quel est le principal défi de la MTA en Afrique aujourd'hui ?",
+                        "answers": [
+                            "Le manque de plantes médicinales",
+                            "Le besoin de formation et de standardisation des pratiques",
+                            "L'interdiction par les gouvernements",
+                            "Le rejet complet par les populations"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "L'OMS encourage l'intégration de la médecine traditionnelle dans :",
+                        "answers": [
+                            "Uniquement les zones rurales",
+                            "Les systèmes de santé nationaux",
+                            "Exclusivement les hôpitaux privés",
+                            "Aucun système officiel"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Le Gabon a mis en place un cadre légal pour la MTA afin de :",
+                        "answers": [
+                            "Interdire les pratiques non scientifiques",
+                            "Garantir la qualité et la sécurité des soins traditionnels",
+                            "Remplacer tous les hôpitaux par des centres traditionnels",
+                            "Exporter uniquement les plantes"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La reconnaissance internationale de la MTA contribue à :",
+                        "answers": [
+                            "Sa marginalisation",
+                            "Sa valorisation et son développement durable",
+                            "Son interdiction progressive",
+                            "Son remplacement par la médecine moderne"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Les 8 catégories de tradipraticiens au Gabon incluent notamment :",
+                        "answers": [
+                            "Uniquement les Nganga",
+                            "Les Nganga, Herboristes, Matrones, Devins, etc.",
+                            "Seulement les vendeurs de plantes",
+                            "Uniquement les pharmaciens traditionnels"
+                        ],
+                        "correct": 1
+                    }
+                ]
+            },
+            "section3": {
+                "title": "Section 3 : Patrimoine Végétal Gabonais",
+                "duration": 10,
+                "passingScore": 8,
+                "maxAttempts": 2,
+                "resetPeriod": "day",
+                "questions": [
+                    {
+                        "question": "Combien d'espèces végétales compte approximativement le Gabon ?",
+                        "answers": [
+                            "2 000+ espèces",
+                            "4 000+ espèces",
+                            "8 000+ espèces",
+                            "12 000+ espèces"
+                        ],
+                        "correct": 2
+                    },
+                    {
+                        "question": "Parmi ces espèces, combien sont identifiées comme médicinales ?",
+                        "answers": [
+                            "300+",
+                            "950+",
+                            "2 000+",
+                            "5 000+"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Quel pourcentage du territoire gabonais est couvert par la forêt ?",
+                        "answers": [
+                            "50%",
+                            "68%",
+                            "88%",
+                            "95%"
+                        ],
+                        "correct": 2
+                    },
+                    {
+                        "question": "Qu'est-ce qu'une plante endémique ?",
+                        "answers": [
+                            "Une plante importée d'un autre pays",
+                            "Une plante qui n'existe que dans une région géographique spécifique",
+                            "Une plante cultivée uniquement en serre",
+                            "Une plante toxique"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Le Gabon est considéré comme un hotspot de biodiversité car :",
+                        "answers": [
+                            "Il a peu d'espèces végétales",
+                            "Il possède une concentration exceptionnelle d'espèces rares et endémiques",
+                            "Il n'a que des espèces communes",
+                            "Il importe toutes ses plantes"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La déforestation menace principalement :",
+                        "answers": [
+                            "Uniquement les zones urbaines",
+                            "La biodiversité et les espèces médicinales",
+                            "Seulement les animaux",
+                            "Les plantations agricoles"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Les plantes médicinales gabonaises sont utilisées pour traiter :",
+                        "answers": [
+                            "Uniquement le paludisme",
+                            "Une grande variété de pathologies",
+                            "Seulement les troubles digestifs",
+                            "Exclusivement les infections cutanées"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La conservation des espèces végétales au Gabon nécessite :",
+                        "answers": [
+                            "L'arrêt total de toute exploitation",
+                            "Une gestion durable et la création d'aires protégées",
+                            "L'importation de plantes étrangères",
+                            "La destruction des forêts secondaires"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Les savoirs traditionnels sur les plantes médicinales sont :",
+                        "answers": [
+                            "Inutiles et obsolètes",
+                            "Un patrimoine immatériel précieux à préserver",
+                            "Identiques dans tous les pays",
+                            "Interdits par la loi"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Le rôle des herboristes dans la préservation du patrimoine végétal consiste à :",
+                        "answers": [
+                            "Exploiter toutes les ressources sans limites",
+                            "Collecter de manière durable et transmettre les connaissances",
+                            "Détruire les plantes anciennes",
+                            "Importer uniquement des plantes exotiques"
+                        ],
+                        "correct": 1
+                    }
+                ]
+            },
+            "section4": {
+                "title": "Section 4 : Botanique Appliquée",
+                "duration": 10,
+                "passingScore": 8,
+                "maxAttempts": 2,
+                "resetPeriod": "day",
+                "questions": [
+                    {
+                        "question": "Le système de nomenclature binomiale a été créé par :",
+                        "answers": [
+                            "Charles Darwin",
+                            "Carl von Linné (Linneaus)",
+                            "Louis Pasteur",
+                            "Gregor Mendel"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Une nomenclature binomiale se compose de :",
+                        "answers": [
+                            "Famille + Ordre",
+                            "Genre + Espèce",
+                            "Classe + Famille",
+                            "Règne + Classe"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Dans le nom scientifique 'Aloe vera', 'Aloe' représente :",
+                        "answers": [
+                            "L'espèce",
+                            "Le genre",
+                            "La famille",
+                            "L'ordre"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Quelle partie de la plante contient généralement les principes actifs médicinaux ?",
+                        "answers": [
+                            "Uniquement les fleurs",
+                            "Les racines, feuilles, écorces, fleurs, fruits selon l'espèce",
+                            "Seulement les tiges",
+                            "Exclusivement les graines"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Qu'est-ce qu'un principe actif végétal ?",
+                        "answers": [
+                            "Une couleur de la plante",
+                            "Une molécule responsable de l'effet thérapeutique",
+                            "Un parasite de la plante",
+                            "Un type de sol"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La règle de récolte durable stipule de ne jamais prélever plus de :",
+                        "answers": [
+                            "10% d'une partie de la plante",
+                            "30% d'une partie de la plante",
+                            "50% d'une partie de la plante",
+                            "70% d'une partie de la plante"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Le séchage des plantes médicinales doit se faire :",
+                        "answers": [
+                            "En plein soleil direct",
+                            "À l'ombre dans un endroit ventilé",
+                            "Dans l'eau",
+                            "Au réfrigérateur"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Pourquoi est-il important de connaître le nom scientifique d'une plante ?",
+                        "answers": [
+                            "C'est inutile, les noms locaux suffisent",
+                            "Pour éviter les confusions entre espèces et garantir l'efficacité",
+                            "Pour impressionner les patients",
+                            "Par obligation légale uniquement"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La période de récolte optimale d'une plante médicinale dépend de :",
+                        "answers": [
+                            "Uniquement de la météo",
+                            "La concentration des principes actifs selon le cycle végétatif",
+                            "Seulement de la volonté du récolteur",
+                            "Exclusivement du prix de vente"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La conservation des plantes séchées doit se faire dans :",
+                        "answers": [
+                            "Des sacs plastiques fermés hermétiquement",
+                            "Des contenants secs, à l'abri de la lumière et de l'humidité",
+                            "De l'eau salée",
+                            "En plein air sans protection"
+                        ],
+                        "correct": 1
+                    }
+                ]
+            },
+            "section5": {
+                "title": "Section 5 : Éthique & Sécurité",
+                "duration": 10,
+                "passingScore": 8,
+                "maxAttempts": 2,
+                "resetPeriod": "day",
+                "questions": [
+                    {
+                        "question": "Combien de piliers comporte la Charte Éthique WAMI ?",
+                        "answers": [
+                            "3 piliers",
+                            "5 piliers",
+                            "7 piliers",
+                            "10 piliers"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Le Protocole de Nagoya concerne :",
+                        "answers": [
+                            "Le commerce international de médicaments",
+                            "L'Accès et le Partage des Avantages (APA/ABS) liés aux ressources génétiques",
+                            "La réglementation des hôpitaux",
+                            "Les normes de construction"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Que signifie 'ABS' dans le contexte du Protocole de Nagoya ?",
+                        "answers": [
+                            "African Botanical System",
+                            "Access and Benefit Sharing (Accès et Partage des Avantages)",
+                            "Advanced Biology Science",
+                            "Association of Botanical Studies"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Une interaction plante-médicament peut :",
+                        "answers": [
+                            "Toujours améliorer l'effet du médicament",
+                            "Augmenter, diminuer ou modifier l'effet du médicament",
+                            "N'avoir aucun impact",
+                            "Remplacer complètement le médicament"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Avant de recommander une plante médicinale, le tradipraticien doit :",
+                        "answers": [
+                            "Ignorer les traitements médicaux en cours",
+                            "S'informer des traitements en cours et des contre-indications possibles",
+                            "Prescrire le maximum de plantes",
+                            "Ne jamais poser de questions"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La confidentialité des savoirs traditionnels signifie :",
+                        "answers": [
+                            "Ne jamais partager aucune information",
+                            "Protéger les connaissances ancestrales de l'appropriation illégitime",
+                            "Interdire toute transmission",
+                            "Vendre les secrets au plus offrant"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Le consentement éclairé du patient implique :",
+                        "answers": [
+                            "Imposer un traitement sans explication",
+                            "Informer clairement le patient et obtenir son accord",
+                            "Décider seul sans consulter le patient",
+                            "Ne donner aucune information"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Un tradipraticien certifié WAMI doit :",
+                        "answers": [
+                            "Refuser toute collaboration avec la médecine moderne",
+                            "Respecter les limites de sa compétence et orienter si nécessaire",
+                            "Traiter toutes les maladies sans exception",
+                            "Critiquer systématiquement les médecins"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La biopiraterie désigne :",
+                        "answers": [
+                            "La protection des plantes",
+                            "L'appropriation illégitime de ressources biologiques et savoirs traditionnels",
+                            "Le commerce légal de plantes",
+                            "La recherche scientifique éthique"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La responsabilité du tradipraticien inclut :",
+                        "answers": [
+                            "Uniquement la vente de plantes",
+                            "La sécurité, l'efficacité et le suivi du patient",
+                            "Aucune obligation particulière",
+                            "Seulement la collecte de plantes"
+                        ],
+                        "correct": 1
+                    }
+                ]
+            },
+            "final": {
+                "title": "Quiz Final : Certification WAMI Module 1",
+                "duration": 25,
+                "passingScore": 18,
+                "maxAttempts": 1,
+                "resetPeriod": "month",
+                "questions": [
+                    {
+                        "question": "Que signifie l'acronyme MTA ?",
+                        "answers": [
+                            "Médecine Traditionnelle Africaine",
+                            "Médecine Tropicale Avancée",
+                            "Médecine Thérapeutique Alternative",
+                            "Médecine Traditionnelle Authentique"
+                        ],
+                        "correct": 0
+                    },
+                    {
+                        "question": "En quelle année l'OMS a-t-elle reconnu la médecine traditionnelle à Alma-Ata ?",
+                        "answers": [
+                            "1968",
+                            "1978",
+                            "1988",
+                            "1998"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Combien de catégories de tradipraticiens sont reconnues au Gabon ?",
+                        "answers": [
+                            "3",
+                            "5",
+                            "8",
+                            "10"
+                        ],
+                        "correct": 2
+                    },
+                    {
+                        "question": "Combien d'espèces végétales compte le Gabon ?",
+                        "answers": [
+                            "2 000+",
+                            "4 000+",
+                            "8 000+",
+                            "12 000+"
+                        ],
+                        "correct": 2
+                    },
+                    {
+                        "question": "Quel pourcentage du territoire est couvert par la forêt au Gabon ?",
+                        "answers": [
+                            "50%",
+                            "68%",
+                            "88%",
+                            "95%"
+                        ],
+                        "correct": 2
+                    },
+                    {
+                        "question": "Combien d'espèces médicinales sont identifiées au Gabon ?",
+                        "answers": [
+                            "300+",
+                            "950+",
+                            "2 000+",
+                            "5 000+"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Qui a créé le système de nomenclature binomiale ?",
+                        "answers": [
+                            "Charles Darwin",
+                            "Carl von Linné",
+                            "Louis Pasteur",
+                            "Gregor Mendel"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Dans 'Aloe vera', que représente 'Aloe' ?",
+                        "answers": [
+                            "L'espèce",
+                            "Le genre",
+                            "La famille",
+                            "L'ordre"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Quel est le maximum de prélèvement durable recommandé par partie de plante ?",
+                        "answers": [
+                            "10%",
+                            "30%",
+                            "50%",
+                            "70%"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Comment doit-on sécher les plantes médicinales ?",
+                        "answers": [
+                            "En plein soleil",
+                            "À l'ombre dans un endroit ventilé",
+                            "Dans l'eau",
+                            "Au réfrigérateur"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Combien de piliers comporte la Charte Éthique WAMI ?",
+                        "answers": [
+                            "3",
+                            "5",
+                            "7",
+                            "10"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Que signifie 'ABS' dans le Protocole de Nagoya ?",
+                        "answers": [
+                            "African Botanical System",
+                            "Access and Benefit Sharing",
+                            "Advanced Biology Science",
+                            "Association of Botanical Studies"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Quel est le rôle principal d'un Nganga ?",
+                        "answers": [
+                            "Vendre des plantes",
+                            "Tradipraticien/guérisseur traditionnel",
+                            "Médecin occidental",
+                            "Pharmacien"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Qu'est-ce qu'une plante endémique ?",
+                        "answers": [
+                            "Une plante importée",
+                            "Une plante spécifique à une région géographique",
+                            "Une plante cultivée en serre",
+                            "Une plante toxique"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Qu'est-ce qu'un principe actif végétal ?",
+                        "answers": [
+                            "Une couleur",
+                            "Une molécule responsable de l'effet thérapeutique",
+                            "Un parasite",
+                            "Un type de sol"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Le Protocole de Nagoya concerne principalement :",
+                        "answers": [
+                            "Le commerce de médicaments",
+                            "L'accès et le partage des avantages liés aux ressources génétiques",
+                            "La réglementation des hôpitaux",
+                            "Les normes de construction"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Une interaction plante-médicament peut :",
+                        "answers": [
+                            "Toujours améliorer l'effet",
+                            "Augmenter, diminuer ou modifier l'effet du médicament",
+                            "N'avoir aucun impact",
+                            "Remplacer le médicament"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Le consentement éclairé signifie :",
+                        "answers": [
+                            "Imposer un traitement",
+                            "Informer clairement et obtenir l'accord du patient",
+                            "Décider seul",
+                            "Ne donner aucune information"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La biopiraterie désigne :",
+                        "answers": [
+                            "La protection des plantes",
+                            "L'appropriation illégitime de ressources et savoirs",
+                            "Le commerce légal",
+                            "La recherche éthique"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La Stratégie OMS pour la médecine traditionnelle couvre :",
+                        "answers": [
+                            "2010-2020",
+                            "2014-2023",
+                            "2015-2025",
+                            "2020-2030"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Le rôle d'un Herboriste est de :",
+                        "answers": [
+                            "Soigner les maladies graves",
+                            "Pratiquer la chirurgie",
+                            "Collecter et commercialiser les plantes médicinales",
+                            "Former les médecins"
+                        ],
+                        "correct": 2
+                    },
+                    {
+                        "question": "Combien de modules comporte la formation WAMI ?",
+                        "answers": [
+                            "2",
+                            "5",
+                            "10",
+                            "15"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La certification WAMI permet de :",
+                        "answers": [
+                            "Pratiquer sans réglementation",
+                            "Être reconnu comme acteur qualifié de la MTA",
+                            "Ouvrir une pharmacie conventionnelle",
+                            "Remplacer un diplôme de médecine"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "Un tradipraticien certifié WAMI doit :",
+                        "answers": [
+                            "Refuser toute collaboration médicale",
+                            "Respecter ses limites et orienter si nécessaire",
+                            "Traiter toutes les maladies",
+                            "Critiquer les médecins"
+                        ],
+                        "correct": 1
+                    },
+                    {
+                        "question": "La responsabilité du tradipraticien inclut :",
+                        "answers": [
+                            "Uniquement la vente",
+                            "La sécurité, l'efficacité et le suivi du patient",
+                            "Aucune obligation",
+                            "Seulement la collecte"
+                        ],
+                        "correct": 1
+                    }
+                ]
+            }
+        };
+
+        // ==================== GLOBAL STATE ====================
+        const ADMIN_CODE = "WAMI2026";
+        let currentUser = null;
+        let currentQuizId = null;
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let quizScore = 0;
+        let quizStartTime = null;
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function hideAllScreens() {
+            console.log("📱 Hiding all screens");
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.add('hidden');
+            });
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleString('fr-FR');
+        }
+
+        // ==================== NAVIGATION FUNCTIONS ====================
+        function showHomeScreen() {
+            console.log("🏠 Navigation: HOME SCREEN");
+            hideAllScreens();
+            document.getElementById('home-screen').classList.remove('hidden');
+        }
+
+        function showLoginScreen() {
+            console.log("👤 Navigation: LOGIN SCREEN");
+            hideAllScreens();
+            document.getElementById('login-screen').classList.remove('hidden');
+            // Clear previous inputs
+            document.getElementById('prenom').value = '';
+            document.getElementById('nom').value = '';
+        }
+
+        function showAdminScreen() {
+            console.log("🔐 Navigation: ADMIN SCREEN");
+            hideAllScreens();
+            document.getElementById('admin-screen').classList.remove('hidden');
+            document.getElementById('admin-login-form').classList.remove('hidden');
+            document.getElementById('admin-panel').classList.add('hidden');
+        }
+
+        function startDemoMode() {
+            console.log("🎓 Navigation: DEMO MODE");
+            currentUser = {
+                prenom: "Démo",
+                nom: "Utilisateur",
+                isDemo: true
+            };
+            showDashboard();
+        }
+
+        // ==================== LOGIN / LOGOUT ====================
+        function login() {
+            console.log("🔑 Attempting login...");
+
+            const prenom = document.getElementById('prenom').value.trim();
+            const nom = document.getElementById('nom').value.trim();
+
+            if (!prenom || !nom) {
+                alert("⚠️ Veuillez remplir tous les champs");
+                return;
+            }
+
+            currentUser = {
+                prenom: prenom,
+                nom: nom,
+                isDemo: false
+            };
+
+            // Save to localStorage
+            localStorage.setItem('wami_current_user', JSON.stringify(currentUser));
+
+            console.log("✅ Login successful:", currentUser);
+            showDashboard();
+        }
+
+        function logout() {
+            console.log("🚪 Logging out...");
+            currentUser = null;
+            localStorage.removeItem('wami_current_user');
+            showHomeScreen();
+        }
+
+        // ==================== DASHBOARD ====================
+        function showDashboard() {
+            console.log("📚 Navigation: DASHBOARD");
+            hideAllScreens();
+            document.getElementById('dashboard-screen').classList.remove('hidden');
+
+            // Display user name
+            const userName = `${currentUser.prenom} ${currentUser.nom}`;
+            document.getElementById('user-name-display').textContent = userName;
+
+            // Load quiz cards
+            loadQuizCards();
+        }
+
+        function loadQuizCards() {
+            console.log("🎴 Loading quiz cards...");
+            const container = document.getElementById('quiz-cards-container');
+            container.innerHTML = '';
+
+            const quizzes = [
+                { id: 'section1', title: 'Section 1', subtitle: 'Introduction à la MTA', icon: '📖', duration: '10 min' },
+                { id: 'section2', title: 'Section 2', subtitle: 'Histoire & Fondements', icon: '🏛️', duration: '10 min' },
+                { id: 'section3', title: 'Section 3', subtitle: 'Patrimoine Végétal', icon: '🌿', duration: '10 min' },
+                { id: 'section4', title: 'Section 4', subtitle: 'Botanique Appliquée', icon: '🔬', duration: '10 min' },
+                { id: 'section5', title: 'Section 5', subtitle: 'Éthique & Sécurité', icon: '⚖️', duration: '10 min' },
+                { id: 'final', title: 'Quiz Final', subtitle: 'Certification Module 1', icon: '🎓', duration: '25 min' }
+            ];
+
+            quizzes.forEach(quiz => {
+                const card = createQuizCard(quiz);
+                container.appendChild(card);
+            });
+        }
+
+        function createQuizCard(quiz) {
+            const card = document.createElement('div');
+            card.className = 'quiz-card';
+
+            const canAttempt = checkQuizAccess(quiz.id);
+            const status = getQuizStatus(quiz.id);
+
+            if (!canAttempt.allowed) {
+                card.classList.add('locked');
+            }
+
+            card.innerHTML = `
+                <h3>${quiz.icon} ${quiz.title}</h3>
+                <p>${quiz.subtitle}</p>
+                <p><strong>⏱️ Durée:</strong> ${quiz.duration}</p>
+                <p><strong>📊 Questions:</strong> ${QUIZ_DATA[quiz.id].questions.length}</p>
+                ${status}
+            `;
+
+            if (canAttempt.allowed) {
+                card.onclick = () => startQuiz(quiz.id);
+            } else {
+                card.onclick = () => alert(canAttempt.message);
+            }
+
+            return card;
+        }
+
+        function getQuizStatus(quizId) {
+            const attempts = getQuizAttempts(quizId);
+            const bestScore = getBestScore(quizId);
+
+            if (bestScore) {
+                const percentage = Math.round((bestScore.score / bestScore.total) * 100);
+                if (percentage >= 80 || (quizId === 'final' && percentage >= 72)) {
+                    return '<span class="badge badge-completed">✅ Réussi (' + percentage + '%)</span>';
+                }
+            }
+
+            if (attempts.length > 0) {
+                return '<span class="badge badge-available">🔓 ' + attempts.length + ' tentative(s) effectuée(s)</span>';
+            }
+
+            return '<span class="badge badge-available">🔓 Disponible</span>';
+        }
+
+        function checkQuizAccess(quizId) {
+            const quizConfig = QUIZ_DATA[quizId];
+            const attempts = getQuizAttempts(quizId);
+
+            if (attempts.length === 0) {
+                return { allowed: true, message: '' };
+            }
+
+            const lastAttempt = attempts[attempts.length - 1];
+            const lastAttemptDate = new Date(lastAttempt.timestamp);
+            const now = new Date();
+
+            if (quizConfig.resetPeriod === 'day') {
+                const resetTime = new Date(lastAttemptDate);
+                resetTime.setHours(0, 0, 0, 0);
+                resetTime.setDate(resetTime.getDate() + 1);
+
+                if (attempts.length >= quizConfig.maxAttempts && now < resetTime) {
+                    const hours = Math.ceil((resetTime - now) / (1000 * 60 * 60));
+                    return {
+                        allowed: false,
+                        message: `⏳ Limite atteinte (${quizConfig.maxAttempts}/jour). Nouvelle tentative disponible dans ${hours}h`
+                    };
+                }
+
+                // Reset daily counter if new day
+                if (now >= resetTime) {
+                    return { allowed: true, message: '' };
+                }
+
+                // Check if still within daily limit
+                const todayAttempts = attempts.filter(a => {
+                    const attemptDate = new Date(a.timestamp);
+                    return attemptDate.toDateString() === now.toDateString();
+                });
+
+                if (todayAttempts.length >= quizConfig.maxAttempts) {
+                    return {
+                        allowed: false,
+                        message: `⏳ Limite atteinte (${quizConfig.maxAttempts}/jour). Réessayez demain.`
+                    };
+                }
+            }
+
+            if (quizConfig.resetPeriod === 'month') {
+                const resetTime = new Date(lastAttemptDate);
+                resetTime.setMonth(resetTime.getMonth() + 1);
+
+                if (attempts.length >= quizConfig.maxAttempts && now < resetTime) {
+                    const days = Math.ceil((resetTime - now) / (1000 * 60 * 60 * 24));
+                    return {
+                        allowed: false,
+                        message: `⏳ Limite atteinte (${quizConfig.maxAttempts}/mois). Nouvelle tentative dans ${days} jours`
+                    };
+                }
+            }
+
+            return { allowed: true, message: '' };
+        }
+
+        function getQuizAttempts(quizId) {
+            if (!currentUser) return [];
+            const key = `wami_attempts_${currentUser.prenom}_${currentUser.nom}_${quizId}`;
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function getBestScore(quizId) {
+            const attempts = getQuizAttempts(quizId);
+            if (attempts.length === 0) return null;
+
+            return attempts.reduce((best, current) => {
+                const currentPercentage = (current.score / current.total) * 100;
+                const bestPercentage = best ? (best.score / best.total) * 100 : 0;
+                return currentPercentage > bestPercentage ? current : best;
+            }, null);
+        }
+
+        // ==================== QUIZ LOGIC ====================
+        function startQuiz(quizId) {
+            console.log("🎯 Starting quiz:", quizId);
+
+            const access = checkQuizAccess(quizId);
+            if (!access.allowed) {
+                alert(access.message);
+                return;
+            }
+
+            currentQuizId = quizId;
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            quizScore = 0;
+            quizStartTime = Date.now();
+
+            hideAllScreens();
+            document.getElementById('quiz-screen').classList.remove('hidden');
+
+            const quizData = QUIZ_DATA[quizId];
+            document.getElementById('quiz-title').textContent = quizData.title;
+            document.getElementById('total-questions').textContent = quizData.questions.length;
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            console.log("❓ Loading question", currentQuestionIndex + 1);
+
+            const quizData = QUIZ_DATA[currentQuizId];
+            const question = quizData.questions[currentQuestionIndex];
+
+            document.getElementById('current-question-num').textContent = currentQuestionIndex + 1;
+            document.getElementById('current-score').textContent = quizScore;
+            document.getElementById('question-text').textContent = question.question;
+
+            const answersContainer = document.getElementById('answers-container');
+            answersContainer.innerHTML = '';
+
+            question.answers.forEach((answer, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = answer;
+                btn.onclick = () => selectAnswer(index, btn);
+                answersContainer.appendChild(btn);
+            });
+
+            // Reset and disable next button
+            const nextBtn = document.getElementById('next-question-btn');
+            nextBtn.disabled = true;
+        }
+
+        function selectAnswer(answerIndex, clickedBtn) {
+            console.log("✓ Answer selected:", answerIndex);
+
+            const quizData = QUIZ_DATA[currentQuizId];
+            const question = quizData.questions[currentQuestionIndex];
+            const isCorrect = answerIndex === question.correct;
+
+            // Disable all answer buttons
+            const allBtns = document.querySelectorAll('.answer-btn');
+            allBtns.forEach(btn => {
+                btn.disabled = true;
+                btn.onclick = null;
+            });
+
+            // Show correct/incorrect
+            if (isCorrect) {
+                clickedBtn.classList.add('correct');
+                quizScore++;
+                document.getElementById('current-score').textContent = quizScore;
+            } else {
+                clickedBtn.classList.add('incorrect');
+                // Show the correct answer
+                allBtns[question.correct].classList.add('correct');
+            }
+
+            // Store answer
+            userAnswers.push({
+                questionIndex: currentQuestionIndex,
+                selectedAnswer: answerIndex,
+                correctAnswer: question.correct,
+                isCorrect: isCorrect
+            });
+
+            // Enable next button
+            document.getElementById('next-question-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            console.log("➡️ Next question");
+
+            const quizData = QUIZ_DATA[currentQuizId];
+
+            if (currentQuestionIndex < quizData.questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            console.log("🏁 Finishing quiz");
+
+            const quizData = QUIZ_DATA[currentQuizId];
+            const totalQuestions = quizData.questions.length;
+            const percentage = Math.round((quizScore / totalQuestions) * 100);
+            const passed = percentage >= (currentQuizId === 'final' ? 72 : 80);
+
+            // Save attempt
+            saveQuizAttempt();
+
+            // Show results
+            hideAllScreens();
+            document.getElementById('results-screen').classList.remove('hidden');
+
+            document.getElementById('final-score-display').textContent = `${quizScore}/${totalQuestions}`;
+
+            const resultMsg = document.getElementById('results-message');
+            if (passed) {
+                resultMsg.textContent = `🎉 Félicitations ! Vous avez réussi avec ${percentage}%`;
+                resultMsg.className = 'results-message success';
+
+                // Show certificate section
+                document.getElementById('certificate-section').classList.remove('hidden');
+            } else {
+                resultMsg.textContent = `😔 Score insuffisant (${percentage}%). Seuil requis : ${currentQuizId === 'final' ? 72 : 80}%`;
+                resultMsg.className = 'results-message failure';
+                document.getElementById('certificate-section').classList.add('hidden');
+            }
+        }
+
+        function saveQuizAttempt() {
+            if (!currentUser) return;
+
+            const quizData = QUIZ_DATA[currentQuizId];
+            const attempt = {
+                quizId: currentQuizId,
+                quizTitle: quizData.title,
+                score: quizScore,
+                total: quizData.questions.length,
+                timestamp: Date.now(),
+                duration: Math.round((Date.now() - quizStartTime) / 1000),
+                userAnswers: userAnswers
+            };
+
+            // Save individual attempt
+            const attemptsKey = `wami_attempts_${currentUser.prenom}_${currentUser.nom}_${currentQuizId}`;
+            const attempts = getQuizAttempts(currentQuizId);
+            attempts.push(attempt);
+            localStorage.setItem(attemptsKey, JSON.stringify(attempts));
+
+            // Save to global results
+            const allResults = JSON.parse(localStorage.getItem('wami_all_results') || '[]');
+            allResults.push({
+                prenom: currentUser.prenom,
+                nom: currentUser.nom,
+                ...attempt
+            });
+            localStorage.setItem('wami_all_results', JSON.stringify(allResults));
+
+            console.log("💾 Quiz attempt saved");
+        }
+
+        function backToDashboard() {
+            console.log("← Back to dashboard");
+            showDashboard();
+        }
+
+        // ==================== PDF CERTIFICATE ====================
+        function downloadCertificate() {
+            console.log("📄 Generating PDF certificate...");
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                // Title
+                doc.setFontSize(24);
+                doc.setTextColor(35, 150, 136);
+                doc.text('CERTIFICAT DE RÉUSSITE', 105, 40, { align: 'center' });
+
+                // Content
+                doc.setFontSize(14);
+                doc.setTextColor(0, 0, 0);
+                doc.text('WAMI Formation - Module 1', 105, 60, { align: 'center' });
+
+                doc.setFontSize(12);
+                doc.text(`Certifie que`, 105, 80, { align: 'center' });
+
+                doc.setFontSize(18);
+                doc.setTextColor(35, 150, 136);
+                doc.text(`${currentUser.prenom} ${currentUser.nom}`, 105, 100, { align: 'center' });
+
+                doc.setFontSize(12);
+                doc.setTextColor(0, 0, 0);
+                const quizData = QUIZ_DATA[currentQuizId];
+                doc.text(`a réussi le quiz : ${quizData.title}`, 105, 120, { align: 'center' });
+                doc.text(`avec un score de ${quizScore}/${quizData.questions.length}`, 105, 135, { align: 'center' });
+                doc.text(`(${Math.round((quizScore/quizData.questions.length)*100)}%)`, 105, 150, { align: 'center' });
+
+                doc.text(`Délivré le ${formatDate(Date.now())}`, 105, 180, { align: 'center' });
+
+                // Footer
+                doc.setFontSize(10);
+                doc.setTextColor(100, 100, 100);
+                doc.text('WAMI - Médecine Traditionnelle Africaine', 105, 270, { align: 'center' });
+
+                // Save
+                const fileName = `WAMI_Certificat_${currentUser.prenom}_${currentUser.nom}_${currentQuizId}.pdf`;
+                doc.save(fileName);
+
+                alert('✅ Certificat téléchargé avec succès !');
+            } catch (error) {
+                console.error('❌ Error generating PDF:', error);
+                alert('⚠️ Erreur lors de la génération du PDF');
+            }
+        }
+
+        // ==================== ADMIN FUNCTIONS ====================
+        function adminLogin() {
+            console.log("🔐 Admin login attempt");
+
+            const code = document.getElementById('admin-code').value;
+
+            if (code === ADMIN_CODE) {
+                console.log("✅ Admin login successful");
+                document.getElementById('admin-login-form').classList.add('hidden');
+                document.getElementById('admin-panel').classList.remove('hidden');
+                loadAdminResults();
+            } else {
+                alert('❌ Code administrateur incorrect');
+            }
+        }
+
+        function adminLogout() {
+            console.log("🚪 Admin logout");
+            showHomeScreen();
+        }
+
+        function loadAdminResults() {
+            console.log("📊 Loading admin results");
+
+            const results = JSON.parse(localStorage.getItem('wami_all_results') || '[]');
+            const tbody = document.getElementById('results-table-body');
+            tbody.innerHTML = '';
+
+            if (results.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Aucun résultat disponible</td></tr>';
+                return;
+            }
+
+            results.reverse().forEach(result => {
+                const percentage = Math.round((result.score / result.total) * 100);
+                const passed = percentage >= (result.quizId === 'final' ? 72 : 80);
+                const status = passed ? '✅ Réussi' : '❌ Échoué';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${result.prenom}</td>
+                    <td>${result.nom}</td>
+                    <td>${result.quizTitle}</td>
+                    <td>${result.score}/${result.total}</td>
+                    <td>${percentage}%</td>
+                    <td>${status}</td>
+                    <td>${formatDate(result.timestamp)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function exportCSV() {
+            console.log("📥 Exporting CSV");
+
+            const results = JSON.parse(localStorage.getItem('wami_all_results') || '[]');
+
+            if (results.length === 0) {
+                alert('Aucune donnée à exporter');
+                return;
+            }
+
+            let csv = 'Prénom,Nom,Quiz,Score,Total,Pourcentage,Statut,Date\n';
+
+            results.forEach(result => {
+                const percentage = Math.round((result.score / result.total) * 100);
+                const passed = percentage >= (result.quizId === 'final' ? 72 : 80);
+                const status = passed ? 'Réussi' : 'Échoué';
+
+                csv += `${result.prenom},${result.nom},"${result.quizTitle}",${result.score},${result.total},${percentage}%,${status},${formatDate(result.timestamp)}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `WAMI_Resultats_${Date.now()}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+
+            alert('✅ Export CSV réussi !');
+        }
+
+        function clearAllData() {
+            if (!confirm('⚠️ Êtes-vous sûr de vouloir effacer TOUTES les données ? Cette action est irréversible.')) {
+                return;
+            }
+
+            if (!confirm('⚠️ DERNIÈRE CONFIRMATION : Effacer toutes les données ?')) {
+                return;
+            }
+
+            // Clear all WAMI data from localStorage
+            const keys = Object.keys(localStorage);
+            keys.forEach(key => {
+                if (key.startsWith('wami_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+
+            alert('✅ Toutes les données ont été effacées');
+            loadAdminResults();
+        }
+
+        // ==================== INITIALIZATION ====================
+        window.onload = function() {
+            console.log("✅ WAMI Quiz Application loaded successfully!");
+            console.log("📋 Available functions:");
+            console.log("   - showHomeScreen()");
+            console.log("   - showLoginScreen()");
+            console.log("   - showAdminScreen()");
+            console.log("   - startDemoMode()");
+            console.log("   - login()");
+            console.log("   - logout()");
+
+            // Check if user was logged in
+            const savedUser = localStorage.getItem('wami_current_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                console.log("👤 Restored user session:", currentUser);
+            }
+        };
+
+        console.log("🎉 All functions loaded and ready!");
+    </script>
+</body>
+</html>
